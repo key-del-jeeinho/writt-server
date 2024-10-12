@@ -1,4 +1,9 @@
 spring:
   application.name: writt-server
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 springdoc:
   swagger-ui.path: /docs
