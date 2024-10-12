@@ -14,7 +14,9 @@ interface FileAPI {
 
     @PostMapping
     @Operation(summary = "파일 생성")
-    fun create(request: FilePayload.CreateRequest): ResponseEntity<File>
+    fun create(
+        @RequestBody request: FilePayload.CreateRequest
+    ): ResponseEntity<File>
 
     @PutMapping("/{fileId}/name")
     @Operation(summary = "파일 이름 변경")
