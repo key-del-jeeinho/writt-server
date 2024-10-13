@@ -5,10 +5,14 @@ import me.writt.server.domain.file.FileRepository
 import me.writt.server.domain.filetree.FileTree
 import me.writt.server.domain.filetree.FileTreeRepository
 import me.writt.server.domain.folder.Folder
+import me.writt.server.domain.folder.FolderCreatedEvent
 import me.writt.server.domain.folder.FolderRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.event.TransactionPhase
+import org.springframework.transaction.event.TransactionalEventListener
 import java.util.*
 
 @Service
@@ -60,5 +64,12 @@ class FileTreeService(
         fileTreeRepository.save(fileTree)
 
         return savedFolder
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(FolderCreatedEvent::class, phase = TransactionPhase.AFTER_COMMIT)
+    protected fun createFileTree(event: FolderCreatedEvent) {
+        val fileTree = FileTree.create(event.folder)
+        fileTreeRepository.save(fileTree)
     }
 }
